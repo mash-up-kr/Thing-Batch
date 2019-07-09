@@ -57,7 +57,6 @@ public class YouTubeApiStepConfiguration {
                 .build();
     }
 
-
     @Bean
     public Function<? super YouTuber, ? extends YouTuber> reqYouTubeApiProcessor() {
         return this::converting;
@@ -100,4 +99,6 @@ public class YouTubeApiStepConfiguration {
                 .beanMapped()
                 .build();
     }
+
+
 }

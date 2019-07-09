@@ -38,8 +38,8 @@ public class TotalRakingStepConfiguration {
     private final ProviderConfiguration providerConfiguration;
     private final RakingStepQuery rakingStepQuery;
 
-    private static final long CATEGORY_TOTAL_NUM = 12L;
-    private static final long NUM_INITIAL_VALUE = 1L;
+    private static final Long CATEGORY_TOTAL_NUM = 12L;
+    private static final Long NUM_INITIAL_VALUE = 1L;
     private static final int CHUNK_SIZE = 200;
 
     @Bean
