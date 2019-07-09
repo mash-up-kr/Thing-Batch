@@ -21,7 +21,6 @@ CREATE TABLE YOU_TUBER
   video_count      BIGINT,
   category_id      BIGINT,
   PRIMARY KEY (id)
-
 );
 
 CREATE TABLE RAKING
@@ -29,12 +28,22 @@ CREATE TABLE RAKING
   id               BIGINT NOT NULL AUTO_INCREMENT,
   name             VARCHAR(255),
   raking           VARCHAR(255),
+  create_at        DATETIME,
   view_count       BIGINT,
   subscriber_count BIGINT,
   thumbnail        VARCHAR(255),
   banner_img_url   VARCHAR(255),
   category_id      BIGINT,
-  you_tuber_id      BIGINT,
+  you_tuber_id     BIGINT,
   PRIMARY KEY (id)
+);
 
+CREATE TABLE CHECK_RAKING
+(
+  id          BIGINT NOT NULL AUTO_INCREMENT,
+  num         BIGINT,
+  category_id BIGINT,
+  create_at   DATETIME,
+
+  PRIMARY KEY (id)
 );

@@ -14,14 +14,16 @@ youtube:
   channelUrl: https://www.googleapis.com/youtube/v3/channels?key={key}&part={part}&id={id}
   apiKey: ${API_KEY}
 
-step:
+api.step:
   updateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
       thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
       subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl WHERE id = :id
-  insertQuery: INSERT INTO RAKING(raking, subscriber_count, view_count, name, thumbnail, banner_img_url, you_tuber_id, category_id)
-      VALUES (:raking, :subscriberCount, :viewCount, :name, :thumbnail, :bannerImgUrl, :youTuberId, :categoryId)
 
-
+ranking.step:
+  numSelectQuery: SELECT num FROM check_raking where category_id = ?
+  numInsertQuery: INSERT INTO check_raking(num, category_id, create_at) VALUES(?, ?, ?)
+  numUpdateQuery: UPDATE check_raking SET num = ? where CREATE_AT = ?
+  rakingInsertQuery: INSERT INTO raking(name, raking, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ? ,? ,? ,? ,? ,?)
 
 logging.level.org.springframework.batch: DEBUG
 spring.batch.job.names: ${job.name:NONE}
@@ -45,8 +47,6 @@ spring:
     username: ${USER_NAME}
     password: ${USER_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-
 
 ---
 

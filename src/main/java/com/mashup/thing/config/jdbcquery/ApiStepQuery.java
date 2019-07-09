@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class JdbcQuery {
+public class ApiStepQuery {
     private String updateQuery;
     private String insertQuery;
 }
