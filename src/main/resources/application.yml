@@ -1,0 +1,60 @@
+spring:
+  profiles:
+    active: local
+
+webClient:
+  requestTimeout: 1000
+  readTimeout: 1000
+  writeTimeout: 1000
+
+youtube:
+  searchPart: id,snippet
+  searchUrl: https://www.googleapis.com/youtube/v3/search?key={key}&part={part}&q={q}
+  channelPart: id,snippet,brandingSettings,contentDetails,invideoPromotion,statistics,topicDetails
+  channelUrl: https://www.googleapis.com/youtube/v3/channels?key={key}&part={part}&id={id}
+  apiKey: ${API_KEY}
+
+step:
+  updateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
+      thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
+      subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl WHERE id = :id
+  insertQuery: INSERT INTO RAKING(raking, subscriber_count, view_count, name, thumbnail, banner_img_url, you_tuber_id, category_id)
+      VALUES (:raking, :subscriberCount, :viewCount, :name, :thumbnail, :bannerImgUrl, :youTuberId, :categoryId)
+
+
+
+logging.level.org.springframework.batch: DEBUG
+spring.batch.job.names: ${job.name:NONE}
+---
+spring:
+  profiles: local
+  datasource:
+    platform: h2
+    hikari:
+      jdbc-url: jdbc:h2:tcp://localhost:9092/mem:testdb;MVCC=TRUE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+
+---
+
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://${MYSQL_URL}?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: ${USER_NAME}
+    password: ${USER_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+---
+
+spring:
+  profiles: test
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:testdb;MVCC=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
