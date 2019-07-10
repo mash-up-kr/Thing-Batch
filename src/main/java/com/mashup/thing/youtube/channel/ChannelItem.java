@@ -9,4 +9,5 @@ public class ChannelItem {
     private ChannelSnippet snippet;
     private ChannelStatistics statistics;
     private BrandingSettings brandingSettings;
+    private ContentDetails contentDetails;
 }

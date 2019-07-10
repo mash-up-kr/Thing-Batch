@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApiStepQuery {
-    private String updateQuery;
-    private String insertQuery;
+    private String youTuberUpdateQuery;
+    private String playListInsertQuery;
 }

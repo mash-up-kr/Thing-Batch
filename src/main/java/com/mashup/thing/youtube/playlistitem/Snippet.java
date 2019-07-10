@@ -1,4 +1,4 @@
-package com.mashup.thing.youtube.search;
+package com.mashup.thing.youtube.playlistitem;
 
 import lombok.Getter;
 
@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 public class Snippet {
 
     private LocalDateTime publishedAt;
-    private String channelId;
     private String title;
+    private Thumbnails thumbnails;
+    private ResourceId resourceId;
 
 }

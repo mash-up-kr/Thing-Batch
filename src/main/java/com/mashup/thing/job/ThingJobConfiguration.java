@@ -1,7 +1,9 @@
 package com.mashup.thing.job;
 
-import com.mashup.thing.job.step.api.YouTubeApiStepConfiguration;
-import com.mashup.thing.job.step.raking.TotalRakingStepConfiguration;
+import com.mashup.thing.job.step.api.PlayListItemApiStepConfiguration;
+import com.mashup.thing.job.step.api.YouTuberApiStepConfiguration;
+import com.mashup.thing.job.step.ranking.CategoryRankingStepConfiguration;
+import com.mashup.thing.job.step.ranking.TotalRankingStepConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -14,15 +16,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ThingJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
-    private final YouTubeApiStepConfiguration youTubeApiStepConfiguration;
-    private final TotalRakingStepConfiguration totalRakingStepConfiguration;
+    private final PlayListItemApiStepConfiguration playListItemApiStepConfiguration;
+    private final YouTuberApiStepConfiguration youTuberApiStepConfiguration;
+    private final TotalRankingStepConfiguration totalRankingStepConfiguration;
+    private final CategoryRankingStepConfiguration categoryRankingStepConfiguration;
 
 
     @Bean
     public Job thingJob() throws Exception {
         return jobBuilderFactory.get("thingJob")
-                .start(youTubeApiStepConfiguration.ApiStep())
-                .next(totalRakingStepConfiguration.totalRakingStep())
+                .start(youTuberApiStepConfiguration.youTuberApiStep(null))
+                .next(playListItemApiStepConfiguration.playListItemApiStep())
+                .next(totalRankingStepConfiguration.totalRankingStep())
+                .next(categoryRankingStepConfiguration.categoryRankingStep())
                 .build();
     }
 

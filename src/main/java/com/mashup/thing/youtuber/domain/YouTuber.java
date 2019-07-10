@@ -4,6 +4,7 @@ import com.mashup.thing.youtube.channel.ChannelItem;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -26,7 +27,6 @@ public class YouTuber {
 
     public void updateInfo(ChannelItem channelItem) {
         this.name = channelItem.getSnippet().getTitle();
-        this.channelId = channelItem.getId();
         this.description = channelItem.getSnippet().getDescription();
         this.publishedAt = channelItem.getSnippet().getPublishedAt();
         this.thumbnail = channelItem.getSnippet().getThumbnails().getHigh().getUrl();
@@ -36,6 +36,9 @@ public class YouTuber {
         this.videoCount = channelItem.getStatistics().getViewCount();
         this.subscriberCount = channelItem.getStatistics().getSubscriberCount();
         this.videoCount = channelItem.getStatistics().getVideoCount();
-        this.bannerImgUrl = channelItem.getBrandingSettings().getImage().getBannerTvHighImageUrl();
+        this.bannerImgUrl = Optional.ofNullable(channelItem.getBrandingSettings().getImage().getBannerTvHighImageUrl())
+                            .orElse("http://s.ytimg.com/yts/img/channels/c4/default_banner-vfl7DRgTn.png");
+
     }
+
 }

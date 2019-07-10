@@ -1,13 +1,13 @@
-package com.mashup.thing.youtube.search;
+package com.mashup.thing.youtube.playlistitem;
 
 import lombok.Getter;
 
 @Getter
-public class Item {
+public class PlayListItem {
 
     private String kind;
     private String etag;
-    private Id id;
+    private String id;
     private Snippet snippet;
 
 }

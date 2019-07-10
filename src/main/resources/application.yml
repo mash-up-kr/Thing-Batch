@@ -8,22 +8,23 @@ webClient:
   writeTimeout: 1000
 
 youtube:
-  searchPart: id,snippet
-  searchUrl: https://www.googleapis.com/youtube/v3/search?key={key}&part={part}&q={q}
-  channelPart: id,snippet,brandingSettings,contentDetails,invideoPromotion,statistics,topicDetails
+  playListItemPart: id, snippet
+  playListItemUrl: https://www.googleapis.com/youtube/v3/playlistItems?key={key}&part={part}&playlistId={playlistId}&maxResults=10
+  channelPart: id,snippet,brandingSettings,contentDetails,statistics
   channelUrl: https://www.googleapis.com/youtube/v3/channels?key={key}&part={part}&id={id}
   apiKey: ${API_KEY}
 
 api.step:
-  updateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
+  youTuberUpdateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
       thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
       subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl WHERE id = :id
+  playListInsertQuery: INSERT INTO video(you_tuber_id, published_at, thumbnail, youtube_video_id, title) VALUES(?, ?, ?, ?, ?)
 
 ranking.step:
-  numSelectQuery: SELECT num FROM check_raking where category_id = ?
-  numInsertQuery: INSERT INTO check_raking(num, category_id, create_at) VALUES(?, ?, ?)
-  numUpdateQuery: UPDATE check_raking SET num = ? where CREATE_AT = ?
-  rakingInsertQuery: INSERT INTO raking(name, raking, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ? ,? ,? ,? ,? ,?)
+  numSelectQuery: SELECT num FROM check_ranking where category_id = ? and create_at = ?
+  numInsertQuery: INSERT INTO check_ranking(num, category_id, create_at) VALUES(?, ?, ?)
+  numUpdateQuery: UPDATE check_ranking SET num = ? where CREATE_AT = ?
+  rankingInsertQuery: INSERT INTO ranking(name, ranking, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ? ,? ,? ,? ,? ,?)
 
 logging.level.org.springframework.batch: DEBUG
 spring.batch.job.names: ${job.name:NONE}

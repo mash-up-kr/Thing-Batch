@@ -1,4 +1,4 @@
-package com.mashup.thing.youtube.search;
+package com.mashup.thing.youtube.playlistitem;
 
 import lombok.Getter;
 

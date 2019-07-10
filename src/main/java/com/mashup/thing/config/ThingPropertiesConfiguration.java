@@ -1,7 +1,7 @@
 package com.mashup.thing.config;
 
 import com.mashup.thing.config.jdbcquery.ApiStepQuery;
-import com.mashup.thing.config.jdbcquery.RakingStepQuery;
+import com.mashup.thing.config.jdbcquery.RankingStepQuery;
 import com.mashup.thing.config.youtubeopenapi.YouTubeOpenApi;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +24,8 @@ public class ThingPropertiesConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "ranking.step")
-    public RakingStepQuery rakingStepQuery() {
-        return new RakingStepQuery();
+    public RankingStepQuery rankingStepQuery() {
+        return new RankingStepQuery();
     }
 
 }

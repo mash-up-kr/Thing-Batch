@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class YouTubeOpenApi {
-    private String searchPart;
-    private String searchUrl;
+    private String playListItemPart;
+    private String playListItemUrl;
     private String channelPart;
     private String channelUrl;
     private String apiKey;

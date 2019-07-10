@@ -37,7 +37,8 @@ public class ProviderConfiguration {
         return queryProvider.getObject();
     }
 
-    private SqlPagingQueryProviderFactoryBean setSelectQuery( DataSource dataSource) {
+
+    private SqlPagingQueryProviderFactoryBean setSelectQuery(DataSource dataSource) {
         SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
         queryProvider.setDataSource(dataSource);
         queryProvider.setSelectClause("*");

@@ -1,4 +1,4 @@
-package com.mashup.thing.raking.domain;
+package com.mashup.thing.ranking.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Raking {
+public class Ranking {
 
     private Long id;
     private Long raking;
@@ -22,9 +22,9 @@ public class Raking {
     private Long youTuberId;
     private Long categoryId;
 
-    public Raking(String bannerImgUrl, Long categoryId, String name,
-                  Long subscriberCount, String thumbnail, Long viewCount,
-                  Long youTuberId, LocalDateTime createAt) {
+    public Ranking(String bannerImgUrl, Long categoryId, String name,
+                   Long subscriberCount, String thumbnail, Long viewCount,
+                   Long youTuberId, LocalDateTime createAt) {
         this.createAt = createAt;
         this.bannerImgUrl = bannerImgUrl;
         this.categoryId = categoryId;

@@ -9,6 +9,7 @@ insert into category (category_type) VALUES ('FOOD');
 insert into category (category_type) VALUES ('ENTERTAINMENT');
 insert into category (category_type) VALUES ('MUSIC');
 insert into category (category_type) VALUES ('COMIC');
+insert into category (category_type) VALUES ('TOTAL');
 
 insert into you_tuber (name, category_id) values ('노래하는코트', 1L);
 insert into you_tuber (name, category_id) values ('SBS TV동물농장x애니멀봐', 1L);
