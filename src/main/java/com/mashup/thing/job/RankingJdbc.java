@@ -1,7 +1,8 @@
-package com.mashup.thing.job.step.ranking;
+package com.mashup.thing.job;
 
 import com.mashup.thing.config.jdbcquery.RankingStepQuery;
 import com.mashup.thing.ranking.domain.Ranking;
+import com.mashup.thing.ranking.domain.RankingType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,19 +20,20 @@ public class RankingJdbc {
 
     private static final Long NUM_INITIAL_VALUE = 1L;
 
-    public void checkRanking(Long categoryId, List<Ranking> rankings) {
-        Long currentRakingNum = checkRakingNum(categoryId);
+    public void checkRanking(Long categoryId, List<Ranking> rankings, RankingType rankingType) {
+        Long currentRakingNum = checkRakingNum(categoryId, rankingType);
         currentRakingNum = decideOrder(currentRakingNum, rankings);
-        updateCurrentRakingNum(currentRakingNum);
+        updateCurrentRakingNum(currentRakingNum, categoryId, rankingType);
     }
 
-    private Long checkRakingNum(Long categoryId) {
+    private Long checkRakingNum(Long categoryId, RankingType rankingType) {
         Long currentRakingNum = NUM_INITIAL_VALUE;
         try {
             currentRakingNum = jdbcTemplate.queryForObject(rankingStepQuery.getNumSelectQuery(),
-                    Long.class, categoryId, LocalDate.now());
+                    Long.class, LocalDate.now(), categoryId, rankingType.getType());
         } catch (EmptyResultDataAccessException e) {
-            jdbcTemplate.update(rankingStepQuery.getNumInsertQuery(), NUM_INITIAL_VALUE, categoryId, LocalDate.now());
+            jdbcTemplate.update(rankingStepQuery.getNumInsertQuery(),
+                    NUM_INITIAL_VALUE, LocalDate.now(), categoryId, rankingType.getType());
         }
         return currentRakingNum;
     }
@@ -39,15 +41,17 @@ public class RankingJdbc {
     private Long decideOrder(Long currentRakingNum, List<Ranking> rankings) {
         for (Ranking ranking : rankings) {
             ranking.setRaking(currentRakingNum++);
-            jdbcTemplate.update(rankingStepQuery.getRankingInsertQuery(), ranking.getName(), ranking.getRaking(), ranking.getCreateAt(),
+            jdbcTemplate.update(rankingStepQuery.getRankingInsertQuery(), ranking.getName(),
+                    ranking.getRaking(), ranking.getRankingType(), ranking.getCreateAt(),
                     ranking.getViewCount(), ranking.getSubscriberCount(), ranking.getThumbnail(),
                     ranking.getBannerImgUrl(), ranking.getCategoryId(), ranking.getYouTuberId());
         }
         return currentRakingNum;
     }
 
-    private void updateCurrentRakingNum(Long currentRakingNum) {
-        jdbcTemplate.update(rankingStepQuery.getNumUpdateQuery(), currentRakingNum, LocalDate.now());
+    private void updateCurrentRakingNum(Long currentRakingNum, Long categoryId, RankingType rankingType) {
+        jdbcTemplate.update(rankingStepQuery.getNumUpdateQuery(), currentRakingNum,
+                LocalDate.now(), categoryId, rankingType.getType());
     }
 
 

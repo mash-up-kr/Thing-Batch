@@ -25,11 +25,13 @@ public class YouTuber {
     private String bannerImgUrl;
     private Long likeCount;
     private Long noCount;
+    private Double soaring;
     private String tag;
     private String playListId;
     private Long categoryId;
 
     public void updateInfo(ChannelItem channelItem) {
+        this.soaring = calculateSoaring(channelItem.getStatistics().getSubscriberCount());
         this.name = channelItem.getSnippet().getTitle();
         this.description = channelItem.getSnippet().getDescription();
         this.publishedAt = channelItem.getSnippet().getPublishedAt();
@@ -46,4 +48,10 @@ public class YouTuber {
                 .orElse("http://s.ytimg.com/yts/img/channels/c4/default_banner-vfl7DRgTn.png");
 
     }
+
+    private Double calculateSoaring(Long toDaySubscriberCount) {
+        return ((double) toDaySubscriberCount - (double) this.subscriberCount) / (double) this.subscriberCount * 100;
+    }
+
+
 }

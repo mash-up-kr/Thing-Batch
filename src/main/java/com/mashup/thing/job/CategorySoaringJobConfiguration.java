@@ -1,31 +1,32 @@
-package com.mashup.thing.job.step.ranking;
+package com.mashup.thing.job;
 
-import com.mashup.thing.job.ProviderConfiguration;
 import com.mashup.thing.ranking.RankingMapper;
 import com.mashup.thing.ranking.domain.Ranking;
+import com.mashup.thing.ranking.domain.RankingType;
 import com.mashup.thing.youtuber.domain.YouTuber;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import javax.sql.DataSource;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
-public class CategoryRankingStepConfiguration {
+public class CategorySoaringJobConfiguration {
 
+    private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;
     private final RankingMapper rankingMapper;
@@ -34,48 +35,55 @@ public class CategoryRankingStepConfiguration {
 
     private static final int CHUNK_SIZE = 200;
 
+    @Value("${ranking.categoryId}")
+    private Long categoryId;
+
     @Bean
-    public Step categoryRankingStep() throws Exception {
-        return stepBuilderFactory.get("categoryRankingStep")
-                .<YouTuber, Ranking>chunk(CHUNK_SIZE)
-                .reader(categoryRankingReader())
-                .processor(categoryRankingProcessor())
-                .writer(categoryRankingWriter())
+    public Job categorySoaringJob() throws Exception {
+        return jobBuilderFactory.get("categorySoaring")
+                .start(categorySoaringStep())
                 .build();
     }
 
     @Bean
-    public JdbcPagingItemReader<YouTuber> categoryRankingReader() throws Exception {
+    public Step categorySoaringStep()
+            throws Exception {
+        return stepBuilderFactory.get("categorySoaringStep")
+                .<YouTuber, Ranking>chunk(CHUNK_SIZE)
+                .reader(categorySoaringReader())
+                .processor(categorySoaringProcessor())
+                .writer(categorySoaringWriter())
+                .build();
+    }
+
+    @Bean
+    public JdbcPagingItemReader<YouTuber> categorySoaringReader() throws Exception {
         return new JdbcPagingItemReaderBuilder<YouTuber>()
                 .pageSize(CHUNK_SIZE)
                 .fetchSize(CHUNK_SIZE)
                 .dataSource(dataSource)
                 .rowMapper(new BeanPropertyRowMapper<>(YouTuber.class))
-                .queryProvider(providerConfiguration.createSelectYuTuberBySubscriber(dataSource))
-                .name("categoryRankingReader")
+                .queryProvider(providerConfiguration.createSelectYuTuberBySoaringWithCategory(dataSource))
+                .name("categorySoaringReader")
                 .build();
     }
 
     @Bean
-    public Function<? super YouTuber, ? extends Ranking> categoryRankingProcessor() {
+    public Function<? super YouTuber, ? extends Ranking> categorySoaringProcessor() {
         return this::toRanking;
     }
 
     private Ranking toRanking(YouTuber youTuber) {
-        return rankingMapper.toRanking(youTuber, youTuber.getCategoryId());
+        return rankingMapper.toRanking(youTuber, categoryId, RankingType.SOARING);
     }
 
     @Bean
-    public ItemWriter<Ranking> categoryRankingWriter() {
+    public ItemWriter<Ranking> categorySoaringWriter() {
         return rankings -> {
-            Long categoryId = rankings.get(0).getCategoryId();
-            List<Ranking> rankingList = rankings.stream().sorted(bySubscriberCount()).collect(Collectors.toList());
-            rankingJdbc.checkRanking(categoryId, rankingList);
+            List<Ranking> rankingList = new ArrayList<>(rankings);
+
+            rankingJdbc.checkRanking(categoryId, rankingList, RankingType.SOARING);
         };
     }
 
-
-    private Comparator<Ranking> bySubscriberCount() {
-        return Comparator.comparing(Ranking::getSubscriberCount).reversed();
-    }
 }

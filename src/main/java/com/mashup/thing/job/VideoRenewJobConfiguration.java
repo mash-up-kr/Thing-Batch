@@ -11,12 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -48,13 +46,12 @@ public class VideoRenewJobConfiguration {
     @Bean
     public Job videoRenewJob() throws Exception {
         return jobBuilderFactory.get("videoRenew")
-                .start(videoRenewStep(null))
+                .start(videoRenewStep())
                 .build();
     }
 
     @Bean
-    @JobScope
-    public Step videoRenewStep(@Value("#{jobParameters[requestDate]}") String requestDate) throws Exception {
+    public Step videoRenewStep() throws Exception {
         return stepBuilderFactory.get("videoRenewStep")
                 .<YouTuber, ResponsePlayList>chunk(CHUNK_SIZE)
                 .reader(videoRenewReader())

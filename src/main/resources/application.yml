@@ -24,13 +24,15 @@ videorenew:
   playListInsertQuery: INSERT INTO video(you_tuber_id, published_at, thumbnail, youtube_video_id, title) VALUES(?, ?, ?, ?, ?)
   videoCountQuery: SELECT count(*) FROM video WHERE youtube_video_id = ?
 
-
-
 ranking.step:
-  numSelectQuery: SELECT num FROM check_ranking where category_id = ? and create_at = ?
-  numInsertQuery: INSERT INTO check_ranking(num, category_id, create_at) VALUES(?, ?, ?)
-  numUpdateQuery: UPDATE check_ranking SET num = ? where CREATE_AT = ?
-  rankingInsertQuery: INSERT INTO ranking(name, ranking, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ? ,? ,? ,? ,? ,?)
+  numSelectQuery: SELECT num FROM check_ranking where create_at = ? and category_id = ? and ranking_type = ?
+  numInsertQuery: INSERT INTO check_ranking(num, create_at, category_id, ranking_type) VALUES(?, ?, ?, ?)
+  numUpdateQuery: UPDATE check_ranking SET num = ? where CREATE_AT = ? and category_id = ? and ranking_type = ?
+  rankingInsertQuery: INSERT INTO ranking(name, ranking, ranking_type, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ?, ? ,? ,? ,? ,? ,?)
+
+
+ranking:
+  categoryId: ${CATEGORY_ID}
 
 logging.level.org.springframework.batch: DEBUG
 spring.batch.job.names: ${job.name:NONE}

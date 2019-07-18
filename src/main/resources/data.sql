@@ -11,8 +11,8 @@ insert into category (category_type) VALUES ('MUSIC');
 insert into category (category_type) VALUES ('COMIC');
 insert into category (category_type) VALUES ('TOTAL');
 
-insert into you_tuber (name, category_id) values ('노래하는코트', 1L);
-insert into you_tuber (name, category_id) values ('SBS TV동물농장x애니멀봐', 1L);
-insert into you_tuber (name, category_id) values ('1MILLION Dance Studio', 1L);
-insert into you_tuber (name, category_id) values ('Doc MC Awesome TV', 1L);
-insert into you_tuber (name, category_id) values ('JFlaMusic', 1L);
+insert into you_tuber (name, category_id, soaring, SUBSCRIBER_COUNT) values ('노래하는코트', 1L, 3.33, 1000);
+insert into you_tuber (name, category_id, soaring, SUBSCRIBER_COUNT) values ('SBS TV동물농장x애니멀봐', 1L, 0.123, 4000);
+insert into you_tuber (name, category_id, soaring, SUBSCRIBER_COUNT) values ('1MILLION Dance Studio', 1L, 6.312, 1231);
+insert into you_tuber (name, category_id, soaring, SUBSCRIBER_COUNT) values ('Doc MC Awesome TV', 1L, 132.399, 312312312);
+insert into you_tuber (name, category_id, soaring, SUBSCRIBER_COUNT) values ('JFlaMusic', 1L, 0.0312321, 64);

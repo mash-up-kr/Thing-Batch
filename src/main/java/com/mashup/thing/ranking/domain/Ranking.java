@@ -14,17 +14,20 @@ public class Ranking {
     private Long id;
     private Long raking;
     private Long subscriberCount;
+    private Double soaring;
     private Long viewCount;
     private String name;
     private String thumbnail;
     private String bannerImgUrl;
     private LocalDateTime createAt;
+    private String rankingType;
     private Long youTuberId;
     private Long categoryId;
 
     public Ranking(String bannerImgUrl, Long categoryId, String name,
                    Long subscriberCount, String thumbnail, Long viewCount,
-                   Long youTuberId, LocalDateTime createAt) {
+                   Long youTuberId, LocalDateTime createAt, Double soaring,
+                   String rankingType) {
         this.createAt = createAt;
         this.bannerImgUrl = bannerImgUrl;
         this.categoryId = categoryId;
@@ -33,5 +36,7 @@ public class Ranking {
         this.thumbnail = thumbnail;
         this.viewCount = viewCount;
         this.youTuberId = youTuberId;
+        this.soaring = soaring;
+        this.rankingType = rankingType;
     }
 }
