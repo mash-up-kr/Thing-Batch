@@ -1,6 +1,6 @@
 package com.mashup.thing.job.step.ranking;
 
-import com.mashup.thing.job.step.ProviderConfiguration;
+import com.mashup.thing.job.ProviderConfiguration;
 import com.mashup.thing.ranking.RankingMapper;
 import com.mashup.thing.ranking.domain.Ranking;
 import com.mashup.thing.youtuber.domain.YouTuber;

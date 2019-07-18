@@ -58,3 +58,11 @@ CREATE TABLE video
   title            VARCHAR(255),
   PRIMARY KEY (id)
 )
+
+CREATE TABLE api_key
+(
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  key_value VARCHAR(255),
+  num INTEGER,
+  PRIMARY KEY (id)
+)

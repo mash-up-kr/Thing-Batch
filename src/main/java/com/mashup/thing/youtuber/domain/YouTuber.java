@@ -23,6 +23,10 @@ public class YouTuber {
     private Long subscriberCount;
     private Long videoCount;
     private String bannerImgUrl;
+    private Long likeCount;
+    private Long noCount;
+    private String tag;
+    private String playListId;
     private Long categoryId;
 
     public void updateInfo(ChannelItem channelItem) {
@@ -36,9 +40,10 @@ public class YouTuber {
         this.videoCount = channelItem.getStatistics().getViewCount();
         this.subscriberCount = channelItem.getStatistics().getSubscriberCount();
         this.videoCount = channelItem.getStatistics().getVideoCount();
+        this.playListId = Optional.ofNullable(channelItem.getContentDetails().getRelatedPlaylists().getUploads())
+                .orElse("");
         this.bannerImgUrl = Optional.ofNullable(channelItem.getBrandingSettings().getImage().getBannerTvHighImageUrl())
-                            .orElse("http://s.ytimg.com/yts/img/channels/c4/default_banner-vfl7DRgTn.png");
+                .orElse("http://s.ytimg.com/yts/img/channels/c4/default_banner-vfl7DRgTn.png");
 
     }
-
 }

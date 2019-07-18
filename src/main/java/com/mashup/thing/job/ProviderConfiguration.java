@@ -1,4 +1,4 @@
-package com.mashup.thing.job.step;
+package com.mashup.thing.job;
 
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.PagingQueryProvider;

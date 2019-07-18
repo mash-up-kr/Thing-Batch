@@ -1,7 +1,8 @@
 package com.mashup.thing.config;
 
-import com.mashup.thing.config.jdbcquery.ApiStepQuery;
+import com.mashup.thing.config.jdbcquery.YouTuberRenewQuery;
 import com.mashup.thing.config.jdbcquery.RankingStepQuery;
+import com.mashup.thing.config.jdbcquery.VideoRenewQuery;
 import com.mashup.thing.config.youtubeopenapi.YouTubeOpenApi;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -12,14 +13,20 @@ public class ThingPropertiesConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "youtube")
-    public YouTubeOpenApi YouTubeOpenApi() {
+    public YouTubeOpenApi youTubeOpenApi() {
         return new YouTubeOpenApi();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "api.step")
-    public ApiStepQuery stepQuery() {
-        return new ApiStepQuery();
+    @ConfigurationProperties(prefix = "youtuberrenew")
+    public YouTuberRenewQuery youTuberRenewQuery() {
+        return new YouTuberRenewQuery();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "videorenew")
+    public VideoRenewQuery videoRenewQuery() {
+        return new VideoRenewQuery();
     }
 
     @Bean

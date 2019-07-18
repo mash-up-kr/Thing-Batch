@@ -14,11 +14,17 @@ youtube:
   channelUrl: https://www.googleapis.com/youtube/v3/channels?key={key}&part={part}&id={id}
   apiKey: ${API_KEY}
 
-api.step:
+youtuberrenew:
   youTuberUpdateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
-      thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
-      subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl WHERE id = :id
+    thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
+    subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl, play_list_id = :playListId
+    WHERE id = :id
+
+videorenew:
   playListInsertQuery: INSERT INTO video(you_tuber_id, published_at, thumbnail, youtube_video_id, title) VALUES(?, ?, ?, ?, ?)
+  videoCountQuery: SELECT count(*) FROM video WHERE youtube_video_id = ?
+
+
 
 ranking.step:
   numSelectQuery: SELECT num FROM check_ranking where category_id = ? and create_at = ?

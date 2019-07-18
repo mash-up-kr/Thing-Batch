@@ -1,21 +1,22 @@
-package com.mashup.thing.job.step.api;
+package com.mashup.thing.job;
 
-import com.mashup.thing.config.jdbcquery.ApiStepQuery;
+import com.mashup.thing.config.jdbcquery.VideoRenewQuery;
 import com.mashup.thing.config.youtubeopenapi.YouTubeOpenApi;
-import com.mashup.thing.job.step.ProviderConfiguration;
 import com.mashup.thing.video.VideoMapper;
 import com.mashup.thing.video.domain.Video;
-import com.mashup.thing.youtube.channel.ResponseChannelYouTuber;
 import com.mashup.thing.youtube.playlistitem.PlayListItem;
 import com.mashup.thing.youtube.playlistitem.ResponsePlayList;
 import com.mashup.thing.youtuber.domain.YouTuber;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -26,70 +27,73 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.function.Function;
 
-@Configuration
 @RequiredArgsConstructor
-public class PlayListItemApiStepConfiguration {
+@Configuration
+public class VideoRenewJobConfiguration {
 
+    private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;
     private final WebClient webClient;
     private final YouTubeOpenApi youTubeOpenApi;
-    private final ApiStepQuery apiJdbcQuery;
+    private final VideoRenewQuery videoRenewQuery;
     private final ProviderConfiguration providerConfiguration;
     private final VideoMapper videoMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final QuotaCalculator quotaCalculator;
+
 
     private static final int CHUNK_SIZE = 200;
 
     @Bean
-    public Step playListItemApiStep() throws Exception {
-        return stepBuilderFactory.get("playListItemApiStep")
+    public Job videoRenewJob() throws Exception {
+        return jobBuilderFactory.get("videoRenew")
+                .start(videoRenewStep(null))
+                .build();
+    }
+
+    @Bean
+    @JobScope
+    public Step videoRenewStep(@Value("#{jobParameters[requestDate]}") String requestDate) throws Exception {
+        return stepBuilderFactory.get("videoRenewStep")
                 .<YouTuber, ResponsePlayList>chunk(CHUNK_SIZE)
-                .reader(reqPlayListItemApiReader())
-                .processor(reqPlayListItemApiProcessor())
-                .writer(reqPlayListItemApiWriter())
+                .reader(videoRenewReader())
+                .processor(videoRenewProcessor())
+                .writer(videoRenewWriter())
                 .build();
 
     }
 
     @Bean
-    public JdbcPagingItemReader<YouTuber> reqPlayListItemApiReader() throws Exception {
+    public JdbcPagingItemReader<YouTuber> videoRenewReader() throws Exception {
         return new JdbcPagingItemReaderBuilder<YouTuber>()
                 .pageSize(CHUNK_SIZE)
                 .fetchSize(CHUNK_SIZE)
                 .dataSource(dataSource)
                 .rowMapper(new BeanPropertyRowMapper<>(YouTuber.class))
                 .queryProvider(providerConfiguration.createSelectYuTuber(dataSource))
-                .name("reqPlayListItemApiReader")
+                .name("youTuberRenewReader")
                 .build();
     }
 
     @Bean
-    public Function<? super YouTuber, ? extends ResponsePlayList> reqPlayListItemApiProcessor() {
+    public Function<? super YouTuber, ? extends ResponsePlayList> videoRenewProcessor() {
         return this::updatePlayList;
 
     }
 
     private ResponsePlayList updatePlayList(YouTuber youTuber) {
-        ResponseChannelYouTuber responseChannel = getYouTuberChannelInfo(youTuber.getChannelId());
-        String playListId = responseChannel.getItems().get(0).getContentDetails().getRelatedPlaylists().getUploads();
+        String playListId = youTuber.getPlayListId();
         ResponsePlayList responsePlayList = getYouTuberPlayListItems(playListId);
         responsePlayList.setYouTuberId(youTuber.getId());
         return responsePlayList;
-
-    }
-
-    private ResponseChannelYouTuber getYouTuberChannelInfo(String channelId) {
-        ResponseChannelYouTuber channelResponse = webClient.get()
-                .uri(youTubeOpenApi.getChannelUrl(), youTubeOpenApi.getApiKey(),
-                        "contentDetails", channelId)
-                .retrieve()
-                .bodyToMono(ResponseChannelYouTuber.class)
-                .block();
-        return channelResponse;
     }
 
     private ResponsePlayList getYouTuberPlayListItems(String playListId) {
+        quotaCalculator.increaseQuota();
+        if (quotaCalculator.isOverQuota()) {
+            youTubeOpenApi.setApiKey(quotaCalculator.nextApiKey());
+        }
         ResponsePlayList responsePlayList = webClient.get()
                 .uri(youTubeOpenApi.getPlayListItemUrl(), youTubeOpenApi.getApiKey(),
                         youTubeOpenApi.getPlayListItemPart(), playListId)
@@ -99,8 +103,9 @@ public class PlayListItemApiStepConfiguration {
         return responsePlayList;
     }
 
+
     @Bean
-    public ItemWriter<ResponsePlayList> reqPlayListItemApiWriter() {
+    public ItemWriter<ResponsePlayList> videoRenewWriter() {
         return playLists -> {
             for (ResponsePlayList playList : playLists) {
                 List<PlayListItem> items = playList.getItems();
@@ -111,7 +116,9 @@ public class PlayListItemApiStepConfiguration {
 
     private void saveVideo(List<PlayListItem> items, Long youTuberId) {
         for (PlayListItem item : items) {
-
+            if (isVideo(item)) {
+                return;
+            }
             Video video = videoMapper.toVideo(item.getSnippet().getTitle(),
                     item.getSnippet().getPublishedAt(),
                     item.getSnippet().getResourceId().getVideoId(),
@@ -122,9 +129,17 @@ public class PlayListItemApiStepConfiguration {
         }
     }
 
-    private void saveExecute(Video video) {
-        jdbcTemplate.update(apiJdbcQuery.getPlayListInsertQuery(), video.getYouTuberId(), video.getPublishedAt(),
-                video.getThumbnail(), video.getYoutubeVideoId(), video.getTitle());
+    private boolean isVideo(PlayListItem item) {
+        Integer result = jdbcTemplate.queryForObject(videoRenewQuery.getVideoCountQuery(),
+                Integer.class, item.getSnippet().getResourceId().getVideoId());
+        if (result > 0) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 
+    private void saveExecute(Video video) {
+        jdbcTemplate.update(videoRenewQuery.getPlayListInsertQuery(), video.getYouTuberId(), video.getPublishedAt(),
+                video.getThumbnail(), video.getYoutubeVideoId(), video.getTitle());
+    }
 }
