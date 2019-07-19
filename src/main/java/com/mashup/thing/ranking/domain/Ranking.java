@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,14 +19,14 @@ public class Ranking {
     private String name;
     private String thumbnail;
     private String bannerImgUrl;
-    private LocalDateTime createAt;
+    private LocalDate createAt;
     private String rankingType;
     private Long youTuberId;
     private Long categoryId;
 
     public Ranking(String bannerImgUrl, Long categoryId, String name,
                    Long subscriberCount, String thumbnail, Long viewCount,
-                   Long youTuberId, LocalDateTime createAt, Double soaring,
+                   Long youTuberId, LocalDate createAt, Double soaring,
                    String rankingType) {
         this.createAt = createAt;
         this.bannerImgUrl = bannerImgUrl;

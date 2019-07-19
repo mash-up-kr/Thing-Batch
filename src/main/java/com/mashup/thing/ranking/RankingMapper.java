@@ -5,7 +5,7 @@ import com.mashup.thing.ranking.domain.RankingType;
 import com.mashup.thing.youtuber.domain.YouTuber;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Component
 public class RankingMapper {
@@ -15,9 +15,7 @@ public class RankingMapper {
                 categoryId, youTuber.getName(),
                 youTuber.getSubscriberCount(), youTuber.getThumbnail(),
                 youTuber.getViewCount(), youTuber.getId(),
-                LocalDateTime.now(), youTuber.getSoaring(), rankingType.getType());
-
-
+                LocalDate.now(), youTuber.getSoaring(), rankingType.getType());
     }
 
 }

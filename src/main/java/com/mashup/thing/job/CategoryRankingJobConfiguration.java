@@ -40,7 +40,7 @@ public class CategoryRankingJobConfiguration {
 
     @Bean
     public Job categoryRankingJob() throws Exception {
-        return jobBuilderFactory.get("categoryRanking")
+        return jobBuilderFactory.get("categoryRankingJob")
                 .start(categoryRankingStep())
                 .build();
     }
@@ -83,7 +83,7 @@ public class CategoryRankingJobConfiguration {
         return rankings -> {
             List<Ranking> rankingList = new ArrayList<>(rankings);
 
-            rankingJdbc.checkRanking(categoryId, rankingList, RankingType.SOARING);
+            rankingJdbc.checkRanking(categoryId, rankingList, RankingType.TOTAL);
         };
     }
 }

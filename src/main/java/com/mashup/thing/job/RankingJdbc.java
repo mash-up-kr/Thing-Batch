@@ -42,9 +42,10 @@ public class RankingJdbc {
         for (Ranking ranking : rankings) {
             ranking.setRaking(currentRakingNum++);
             jdbcTemplate.update(rankingStepQuery.getRankingInsertQuery(), ranking.getName(),
-                    ranking.getRaking(), ranking.getRankingType(), ranking.getCreateAt(),
-                    ranking.getViewCount(), ranking.getSubscriberCount(), ranking.getThumbnail(),
-                    ranking.getBannerImgUrl(), ranking.getCategoryId(), ranking.getYouTuberId());
+                    ranking.getRaking(), ranking.getSoaring(), ranking.getRankingType(),
+                    ranking.getCreateAt(), ranking.getViewCount(), ranking.getSubscriberCount(),
+                    ranking.getThumbnail(), ranking.getBannerImgUrl(), ranking.getCategoryId(),
+                    ranking.getYouTuberId());
         }
         return currentRakingNum;
     }

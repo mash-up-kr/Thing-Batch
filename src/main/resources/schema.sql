@@ -118,3 +118,12 @@ CREATE TABLE check_ranking
 
   PRIMARY KEY (id)
 );
+
+CREATE TABLE ranking_date
+(
+  id           BIGINT NOT NULL AUTO_INCREMENT,
+  create_at    DATETIME,
+
+  PRIMARY KEY (id)
+);
+

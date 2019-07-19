@@ -45,7 +45,7 @@ public class VideoRenewJobConfiguration {
 
     @Bean
     public Job videoRenewJob() throws Exception {
-        return jobBuilderFactory.get("videoRenew")
+        return jobBuilderFactory.get("videoRenewJob")
                 .start(videoRenewStep())
                 .build();
     }

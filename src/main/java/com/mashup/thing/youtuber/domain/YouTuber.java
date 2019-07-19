@@ -2,6 +2,7 @@ package com.mashup.thing.youtuber.domain;
 
 import com.mashup.thing.youtube.channel.ChannelItem;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
+@Slf4j
 public class YouTuber {
 
     private Long id;
@@ -50,8 +52,15 @@ public class YouTuber {
     }
 
     private Double calculateSoaring(Long toDaySubscriberCount) {
+        if (isYesterdaySubscriberCount()) {
+            return (double) toDaySubscriberCount;
+        }
+
         return ((double) toDaySubscriberCount - (double) this.subscriberCount) / (double) this.subscriberCount * 100;
     }
 
+    private boolean isYesterdaySubscriberCount() {
+        return this.subscriberCount.equals(0L);
+    }
 
 }

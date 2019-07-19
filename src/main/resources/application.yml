@@ -16,7 +16,7 @@ youtube:
 
 youtuberrenew:
   youTuberUpdateQuery: UPDATE you_tuber SET description = :description, channel_id = :channelId, published_at = :publishedAt,
-    thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount,
+    thumbnail = :thumbnail, country = :country, view_count = :viewCount, comment_count = :commentCount, soaring = :soaring,
     subscriber_count = :subscriberCount, video_count = :videoCount, banner_img_url = :bannerImgUrl, play_list_id = :playListId
     WHERE id = :id
 
@@ -28,11 +28,13 @@ ranking.step:
   numSelectQuery: SELECT num FROM check_ranking where create_at = ? and category_id = ? and ranking_type = ?
   numInsertQuery: INSERT INTO check_ranking(num, create_at, category_id, ranking_type) VALUES(?, ?, ?, ?)
   numUpdateQuery: UPDATE check_ranking SET num = ? where CREATE_AT = ? and category_id = ? and ranking_type = ?
-  rankingInsertQuery: INSERT INTO ranking(name, ranking, ranking_type, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ?, ? ,? ,? ,? ,? ,?)
+  rankingInsertQuery: INSERT INTO ranking(name, ranking, soaring, ranking_type, create_at, view_count, subscriber_count, thumbnail, banner_img_url, category_id, you_tuber_id) VALUES(?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?)
 
 
 ranking:
   categoryId: ${CATEGORY_ID}
+  currentApiKey: ${CURRENT_API_KEY}
+  quota: ${QUOTA}
 
 logging.level.org.springframework.batch: DEBUG
 spring.batch.job.names: ${job.name:NONE}

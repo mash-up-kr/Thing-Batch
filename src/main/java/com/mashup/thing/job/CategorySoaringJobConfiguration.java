@@ -40,7 +40,7 @@ public class CategorySoaringJobConfiguration {
 
     @Bean
     public Job categorySoaringJob() throws Exception {
-        return jobBuilderFactory.get("categorySoaring")
+        return jobBuilderFactory.get("categorySoaringJob")
                 .start(categorySoaringStep())
                 .build();
     }

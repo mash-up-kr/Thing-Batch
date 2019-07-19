@@ -21,10 +21,7 @@ public class ProviderConfiguration {
     public PagingQueryProvider createSelectYuTuber(DataSource dataSource) throws Exception {
         SqlPagingQueryProviderFactoryBean queryProvider = createSelectQuery(dataSource);
 
-        Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("id", Order.ASCENDING);
-
-        queryProvider.setSortKeys(sortKeys);
+        queryProvider.setSortKeys(createSortKey("id"));
 
         return queryProvider.getObject();
     }
@@ -33,10 +30,7 @@ public class ProviderConfiguration {
     public PagingQueryProvider createSelectYuTuberBySubscriber(DataSource dataSource) throws Exception {
         SqlPagingQueryProviderFactoryBean queryProvider = createSelectQuery(dataSource);
 
-        Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("subscriber_count", Order.DESCENDING);
-
-        queryProvider.setSortKeys(sortKeys);
+        queryProvider.setSortKeys(createSortKey("subscriber_count", "id"));
 
         return queryProvider.getObject();
     }
@@ -45,10 +39,7 @@ public class ProviderConfiguration {
     public PagingQueryProvider createSelectYuTuberBySoaring(DataSource dataSource) throws Exception {
         SqlPagingQueryProviderFactoryBean queryProvider = createSelectQuery(dataSource);
 
-        Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("soaring", Order.DESCENDING);
-
-        queryProvider.setSortKeys(sortKeys);
+        queryProvider.setSortKeys(createSortKey("soaring", "id"));
 
         return queryProvider.getObject();
     }
@@ -58,10 +49,7 @@ public class ProviderConfiguration {
         SqlPagingQueryProviderFactoryBean queryProvider = createSelectQuery(dataSource);
         queryProvider.setWhereClause("where category_id = " + categoryId);
 
-        Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("subscriber_count", Order.DESCENDING);
-
-        queryProvider.setSortKeys(sortKeys);
+        queryProvider.setSortKeys(createSortKey("subscriber_count"));
 
         return queryProvider.getObject();
     }
@@ -71,14 +59,25 @@ public class ProviderConfiguration {
         SqlPagingQueryProviderFactoryBean queryProvider = createSelectQuery(dataSource);
         queryProvider.setWhereClause("where category_id = " + categoryId);
 
-        Map<String, Order> sortKeys = new HashMap<>(1);
-        sortKeys.put("soaring", Order.DESCENDING);
-
-        queryProvider.setSortKeys(sortKeys);
+        queryProvider.setSortKeys(createSortKey("soaring"));
 
         return queryProvider.getObject();
     }
 
+    private Map<String, Order> createSortKey(String firstKey) {
+        Map<String, Order> sortKeys = new HashMap<>(1);
+        sortKeys.put(firstKey, Order.DESCENDING);
+
+        return sortKeys;
+    }
+
+    private Map<String, Order> createSortKey(String firstKey, String secondKey) {
+        Map<String, Order> sortKeys = new HashMap<>(1);
+        sortKeys.put(firstKey, Order.DESCENDING);
+        sortKeys.put(secondKey, Order.ASCENDING);
+
+        return sortKeys;
+    }
 
     private SqlPagingQueryProviderFactoryBean createSelectQuery(DataSource dataSource) {
         SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();

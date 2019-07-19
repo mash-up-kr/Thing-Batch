@@ -2,6 +2,7 @@ package com.mashup.thing.job;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +13,18 @@ public class QuotaCalculator {
     private final JdbcTemplate jdbcTemplate;
 
     private static final int MAX_QUOTA = 10000;
-    private static final int QUOTA_INIT = 0;
-    private static final int PLAYLIST_QUOTA = 3;
+
 
     private int youTubeApiQuota = 10000;
-    private int currentApiKey = 6;
+
+    @Value("${ranking.currentApiKey}")
+    private int currentApiKey;
+
+    @Value("${ranking.quota}")
+    private int quota;
 
     public void increaseQuota() {
-        youTubeApiQuota += PLAYLIST_QUOTA;
+        youTubeApiQuota += quota;
     }
 
     public boolean isOverQuota() {
@@ -28,7 +33,7 @@ public class QuotaCalculator {
 
     public String nextApiKey() {
         currentApiKey++;
-        youTubeApiQuota = QUOTA_INIT;
+        youTubeApiQuota = quota;
         String key = jdbcTemplate
                 .queryForObject("SELECT key_value FROM api_key WHERE num = ?", String.class, currentApiKey);
         log.info(key);

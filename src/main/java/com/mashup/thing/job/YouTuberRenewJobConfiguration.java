@@ -35,7 +35,7 @@ public class YouTuberRenewJobConfiguration {
     private final ProviderConfiguration providerConfiguration;
     private final QuotaCalculator quotaCalculator;
 
-    private static final int CHUNK_SIZE = 300;
+    private static final int CHUNK_SIZE = 200;
 
     @Bean
     public Job YouTuberRenewJob() throws Exception {
@@ -88,7 +88,6 @@ public class YouTuberRenewJobConfiguration {
         if (quotaCalculator.isOverQuota()) {
             youTubeOpenApi.setApiKey(quotaCalculator.nextApiKey());
         }
-
         ResponseChannelYouTuber channelResponse = webClient.get()
                 .uri(youTubeOpenApi.getChannelUrl(), youTubeOpenApi.getApiKey(),
                         youTubeOpenApi.getChannelPart(), channelId)
