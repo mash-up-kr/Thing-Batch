@@ -42,15 +42,16 @@ CREATE TABLE you_tuber
   thumbnail        VARCHAR(255),
   banner_img_url   VARCHAR(255),
   country          VARCHAR(255),
+  soaring          DOUBLE,
   view_count       BIGINT,
   comment_count    BIGINT,
   subscriber_count BIGINT,
   video_count      BIGINT,
   like_count       BIGINT,
+  play_list_id     VARCHAR(255),
   tag              VARCHAR(255),
   no_count         BIGINT,
   category_id      BIGINT,
-  soaring          DOUBLE,
   PRIMARY KEY (id)
 );
 
@@ -121,8 +122,8 @@ CREATE TABLE check_ranking
 
 CREATE TABLE ranking_date
 (
-  id           BIGINT NOT NULL AUTO_INCREMENT,
-  create_at    DATETIME,
+  id        BIGINT NOT NULL AUTO_INCREMENT,
+  create_at DATETIME,
 
   PRIMARY KEY (id)
 );

@@ -31,7 +31,7 @@ public class TotalRankingJobConfiguration {
     private final RankingMapper rankingMapper;
     private final ProviderConfiguration providerConfiguration;
     private final RankingJdbc rankingJdbc;
-    private static final Long CATEGORY_TOTAL_NUM = 12L;
+    private static final Long CATEGORY_TOTAL_NUM = 1L;
     private static final int CHUNK_SIZE = 200;
 
     @Bean
