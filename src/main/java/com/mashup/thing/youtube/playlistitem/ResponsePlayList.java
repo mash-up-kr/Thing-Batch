@@ -3,6 +3,7 @@ package com.mashup.thing.youtube.playlistitem;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,4 +16,7 @@ public class ResponsePlayList {
     private List<PlayListItem> items;
     private Long youTuberId;
 
+    public ResponsePlayList() {
+        items = new ArrayList<>();
+    }
 }

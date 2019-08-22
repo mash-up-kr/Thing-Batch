@@ -8,6 +8,7 @@ import com.mashup.thing.youtube.playlistitem.PlayListItem;
 import com.mashup.thing.youtube.playlistitem.ResponsePlayList;
 import com.mashup.thing.youtuber.domain.YouTuber;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -27,6 +28,7 @@ import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Configuration
+@Slf4j
 public class VideoRenewJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
@@ -96,6 +98,7 @@ public class VideoRenewJobConfiguration {
                         youTubeOpenApi.getPlayListItemPart(), playListId)
                 .retrieve()
                 .bodyToMono(ResponsePlayList.class)
+                .onErrorReturn(new ResponsePlayList())
                 .block();
         return responsePlayList;
     }
